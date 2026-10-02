@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexas API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Sleek Top Bar */
+    .top-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .brand-tag {
+      font-size: 11px;
+      font-weight: 600;
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #dbeafe;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Minimalist Auth Control in Header */
+    .auth-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .auth-input {
+      width: 380px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #f8fafc;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .auth-input:focus {
+      border-color: #2563eb;
+      background: #ffffff;
+    }
+    .btn-copy {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .btn-copy:hover {
+      background: #1d4ed8;
+    }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #16a34a;
+      background: #f0fdf4;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #bbf7d0;
+      white-space: nowrap;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #16a34a;
+      border-radius: 50%;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hide Swagger default headers & unnecessary UI clutter */
+    .swagger-ui .info {
+      display: none !important;
+    }
+    .swagger-ui .scheme-container {
+      display: none !important;
+    }
+    
+    /* Clean Swagger UI styling */
+    .swagger-ui {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px 32px 60px 32px;
+      font-family: 'Inter', sans-serif !important;
+    }
+    .swagger-ui .wrapper {
+      padding: 0 !important;
+    }
+    .swagger-ui .opblock-tag-section {
+      margin-bottom: 20px;
+    }
+    .swagger-ui .opblock-tag {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 14px 0 8px 0;
+      margin-bottom: 12px;
+    }
+    .swagger-ui .opblock {
+      border-radius: 6px !important;
+      box-shadow: none !important;
+      border: 1px solid #e2e8f0 !important;
+      margin: 0 0 10px 0 !important;
+      background: #ffffff !important;
+    }
+    .swagger-ui .opblock.opblock-post {
+      background: #f8fbff !important;
+      border-color: #dbeafe !important;
+    }
+    .swagger-ui .opblock.opblock-get {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+    .swagger-ui .opblock .opblock-summary {
+      padding: 10px 16px;
+    }
+    .swagger-ui .opblock .opblock-summary-method {
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      min-width: 60px;
+    }
+    .swagger-ui .opblock .opblock-summary-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .swagger-ui .opblock .opblock-summary-description {
+      font-size: 12.5px;
+      color: #64748b;
+    }
+    .swagger-ui .btn.authorize {
+      display: none !important;
+    }
+    .swagger-ui .btn.execute {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 6px 16px;
+    }
+    .swagger-ui .btn.try-out__btn {
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .swagger-ui input[type=text], .swagger-ui textarea {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      border-radius: 5px;
+      border: 1px solid #cbd5e1;
+    }
+    .swagger-ui .models {
+      margin-top: 30px !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 6px !important;
+      background: #ffffff !important;
+    }
+    .swagger-ui .models h4 {
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      padding: 12px 16px !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="brand-section">
+      <span class="brand-name">Nexas API</span>
+      <span class="brand-tag">v2.0.0</span>
+      <span class="brand-sub">ERPNext showline</span>
+    </div>
+    <div class="auth-control">
+      <input type="text" id="activeTokenInput" class="auth-input" value="token 070a9cbc1338bfd:be00bbeb7c6b6e0" spellcheck="false" title="Active Authorization Token (Auto-injected into all requests)" />
+      <button class="btn-copy" onclick="copyToken()">Copy Token</button>
+      <div class="status-badge" title="Token is automatically sent with every API call">
+        <span class="status-dot"></span>
+        Auto-Injected
+      </div>
+    </div>
+  </header>
+
+  <div id="swagger-ui"></div>
+  <div id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js"></script>
+  <script>
+    const spec = {
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Nexas API",
+    "version": "2.0.0",
+    "description": "Complete REST & RPC API Reference for Havano POS & ERPNext (site: havano, company: showline)"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Local Frappe Bench Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Format: token <api_key>:<api_secret>"
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "usr",
+          "pwd"
+        ],
+        "properties": {
+          "usr": {
+            "type": "string",
+            "example": "Administrator"
+          },
+          "pwd": {
+            "type": "string",
+            "example": "admin"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Africa/Harare"
+          }
+        }
+      },
+      "CreateProductRequest": {
+        "type": "object",
+        "required": [
+          "item_code",
+          "item_name"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "example": "POS-DRINK-001"
+          },
+          "item_name": {
+            "type": "string",
+            "example": "Iced Tea 500ml"
+          },
+          "item_group": {
+            "type": "string",
+            "example": "Products"
+          },
+          "stock_uom": {
+            "type": "string",
+            "example": "Nos"
+          },
+          "standard_rate": {
+            "type": "number",
+            "example": 3.5
+          },
+          "opening_stock": {
+            "type": "number",
+            "example": 100.0,
+            "description": "Optional: Automatically initializes warehouse inventory"
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          },
+          "barcode": {
+            "type": "string",
+            "example": "600987654321"
+          },
+          "description": {
+            "type": "string",
+            "example": "Refreshing iced tea"
+          }
+        }
+      },
+      "GetProductsRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 50
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          },
+          "stock_only": {
+            "type": "integer",
+            "example": 0,
+            "description": "0 = All products; 1 = In-stock products only (qty > 0)"
+          },
+          "search_term": {
+            "type": "string",
+            "example": "",
+            "description": "Optional search term"
+          },
+          "item_group": {
+            "type": "string",
+            "example": "",
+            "description": "Optional category filter"
+          }
+        }
+      },
+      "ConfirmStockReceiptRequest": {
+        "type": "object",
+        "required": [
+          "received_items"
+        ],
+        "properties": {
+          "stock_entry": {
+            "type": "string",
+            "example": "MAT-STE-2026-00004",
+            "description": "Cloud Stock Entry ID"
+          },
+          "device_id": {
+            "type": "string",
+            "example": "POS-TERMINAL-01"
+          },
+          "received_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "item_code",
+                "received_qty"
+              ],
+              "properties": {
+                "item_code": {
+                  "type": "string",
+                  "example": "POS-BURGER-001"
+                },
+                "received_qty": {
+                  "type": "number",
+                  "example": 50.0
+                }
+              }
+            }
+          }
+        }
+      },
+      "PullAllStockRequest": {
+        "type": "object",
+        "properties": {
+          "from_warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          },
+          "company": {
+            "type": "string",
+            "example": "showline"
+          },
+          "device_id": {
+            "type": "string",
+            "example": "POS-TERMINAL-01"
+          },
+          "target_warehouse": {
+            "type": "string",
+            "example": ""
+          },
+          "reset_cloud_stock": {
+            "type": "integer",
+            "example": 1,
+            "description": "1 = Depletes cloud warehouse to 0; 0 = Read snapshot only"
+          }
+        }
+      },
+      "SalesInvoiceItem": {
+        "type": "object",
+        "required": [
+          "item_code",
+          "qty",
+          "rate"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "example": "POS-BURGER-001"
+          },
+          "qty": {
+            "type": "number",
+            "example": 1.0
+          },
+          "rate": {
+            "type": "number",
+            "example": 12.5
+          },
+          "income_account": {
+            "type": "string",
+            "example": "Sales - S"
+          },
+          "expense_account": {
+            "type": "string",
+            "example": "Cost of Goods Sold - S"
+          },
+          "cost_center": {
+            "type": "string",
+            "example": "Main - S"
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          }
+        }
+      },
+      "SalesInvoice": {
+        "type": "object",
+        "required": [
+          "doctype",
+          "customer",
+          "company",
+          "items"
+        ],
+        "properties": {
+          "doctype": {
+            "type": "string",
+            "example": "Sales Invoice"
+          },
+          "customer": {
+            "type": "string",
+            "example": "Test POS Customer"
+          },
+          "company": {
+            "type": "string",
+            "example": "showline"
+          },
+          "currency": {
+            "type": "string",
+            "example": "ZWL"
+          },
+          "debit_to": {
+            "type": "string",
+            "example": "Debtors - S"
+          },
+          "posting_date": {
+            "type": "string",
+            "example": "2026-10-02"
+          },
+          "reference_number": {
+            "type": "string",
+            "example": "REST-INV-2026-001"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesInvoiceItem"
+            }
+          }
+        }
+      },
+      "PaymentEntry": {
+        "type": "object",
+        "required": [
+          "doctype",
+          "payment_type",
+          "party_type",
+          "party",
+          "paid_amount"
+        ],
+        "properties": {
+          "doctype": {
+            "type": "string",
+            "example": "Payment Entry"
+          },
+          "payment_type": {
+            "type": "string",
+            "example": "Receive"
+          },
+          "party_type": {
+            "type": "string",
+            "example": "Customer"
+          },
+          "party": {
+            "type": "string",
+            "example": "Test POS Customer"
+          },
+          "company": {
+            "type": "string",
+            "example": "showline"
+          },
+          "paid_from": {
+            "type": "string",
+            "example": "Debtors - S"
+          },
+          "paid_to": {
+            "type": "string",
+            "example": "Cash - S"
+          },
+          "paid_amount": {
+            "type": "number",
+            "example": 12.5
+          },
+          "received_amount": {
+            "type": "number",
+            "example": 12.5
+          },
+          "reference_no": {
+            "type": "string",
+            "example": "PAY-REF-001"
+          },
+          "reference_date": {
+            "type": "string",
+            "example": "2026-10-02"
+          }
+        }
+      },
+      "StockTransferItem": {
+        "type": "object",
+        "required": [
+          "item_code",
+          "qty"
+        ],
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "example": "POS-BURGER-001"
+          },
+          "qty": {
+            "type": "number",
+            "example": 5.0
+          },
+          "s_warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          },
+          "t_warehouse": {
+            "type": "string",
+            "example": "Finished Goods - S"
+          }
+        }
+      },
+      "StockEntry": {
+        "type": "object",
+        "required": [
+          "doctype",
+          "stock_entry_type",
+          "company",
+          "items"
+        ],
+        "properties": {
+          "doctype": {
+            "type": "string",
+            "example": "Stock Entry"
+          },
+          "stock_entry_type": {
+            "type": "string",
+            "example": "Material Transfer"
+          },
+          "purpose": {
+            "type": "string",
+            "example": "Material Transfer"
+          },
+          "company": {
+            "type": "string",
+            "example": "showline"
+          },
+          "posting_date": {
+            "type": "string",
+            "example": "2026-10-02"
+          },
+          "from_warehouse": {
+            "type": "string",
+            "example": "Stores - S"
+          },
+          "to_warehouse": {
+            "type": "string",
+            "example": "Finished Goods - S"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockTransferItem"
+            }
+          }
+        }
+      },
+      "StockReconciliation": {
+        "type": "object",
+        "required": [
+          "doctype",
+          "company",
+          "purpose",
+          "items"
+        ],
+        "properties": {
+          "doctype": {
+            "type": "string",
+            "example": "Stock Reconciliation"
+          },
+          "company": {
+            "type": "string",
+            "example": "showline"
+          },
+          "purpose": {
+            "type": "string",
+            "example": "Stock Reconciliation"
+          },
+          "posting_date": {
+            "type": "string",
+            "example": "2026-10-02"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "item_code": {
+                  "type": "string",
+                  "example": "POS-BURGER-001"
+                },
+                "warehouse": {
+                  "type": "string",
+                  "example": "Stores - S"
+                },
+                "qty": {
+                  "type": "number",
+                  "example": 50.0
+                },
+                "valuation_rate": {
+                  "type": "number",
+                  "example": 12.5
+                }
+              }
+            }
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "required": [
+          "doctype",
+          "customer_name",
+          "customer_type",
+          "customer_group",
+          "territory"
+        ],
+        "properties": {
+          "doctype": {
+            "type": "string",
+            "example": "Customer"
+          },
+          "customer_name": {
+            "type": "string",
+            "example": "Walk-in Retail Buyer"
+          },
+          "customer_type": {
+            "type": "string",
+            "example": "Individual"
+          },
+          "customer_group": {
+            "type": "string",
+            "example": "Commercial"
+          },
+          "territory": {
+            "type": "string",
+            "example": "Zimbabwe"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/api/method/nexas_api.api.login": {
+      "post": {
+        "tags": [
+          "1. Authentication"
+        ],
+        "summary": "User Login",
+        "description": "Authenticates user and returns authorization token and bootstrap.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/method/nexas_api.api.create_user": {
+      "post": {
+        "tags": [
+          "1. Authentication"
+        ],
+        "summary": "Create User (Auto-Setup & Roles)",
+        "description": "User signup with automatic role assignment and company/warehouse defaults.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "first_name"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "cashier_pos@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "Admin@Nexas2026!"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "Cashier"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "One"
+                  },
+                  "pin": {
+                    "type": "string",
+                    "example": "1234"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "example": "+263771234567"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully"
+          }
+        }
+      }
+    },
+    "/api/method/nexas_api.api.create_product": {
+      "post": {
+        "tags": [
+          "2. Products & Inventory Management"
+        ],
+        "summary": "Create Product / Item (with Barcode & Opening Stock)",
+        "description": "Creates a new Product in ERPNext with barcode, standard selling rate, and optional opening warehouse stock.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product created successfully with inventory"
+          }
+        }
+      }
+    },
+    "/api/method/nexas_api.api.get_products": {
+      "post": {
+        "tags": [
+          "2. Products & Inventory Management"
+        ],
+        "summary": "Get Products Catalog (Live Stock & Barcodes)",
+        "description": "Returns full product catalog with barcodes, live stock levels in warehouse, image URLs, and pricing. Set `stock_only: 1` to return in-stock products only.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetProductsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product catalog with barcodes and live stock"
+          }
+        }
+      }
+    },
+    "/api/method/nexas_api.api.pull_all_stock_to_local": {
+      "post": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "Pull All Stock to Local POS (Drains Cloud Stock to 0)",
+        "description": "Transfers all inventory from the cloud warehouse into the local app, automatically creating a Stock Entry on Cloud ERP and depleting cloud warehouse stock to 0.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PullAllStockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock transferred and cloud depleted"
+          }
+        }
+      }
+    },
+    "/api/method/nexas_api.api.confirm_stock_receipt": {
+      "post": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "Confirm & Validate Stock Receipt (Handshake)",
+        "description": "Two-way verification: validates that the local POS terminal accurately received the expected stock items without discrepancies or shortages.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmStockReceiptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock receipt verification report with exact match or variance list"
+          }
+        }
+      }
+    },
+    "/api/resource/Stock Entry": {
+      "post": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "Create Stock Transfer (Stock Entry)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockEntry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock Transfer created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "List Stock Transfers",
+        "responses": {
+          "200": {
+            "description": "List of Stock Transfers"
+          }
+        }
+      }
+    },
+    "/api/resource/Stock Reconciliation": {
+      "post": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "Create Stock Reconciliation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockReconciliation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock Reconciliation created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "3. Stock Transfer & Two-Way Recon"
+        ],
+        "summary": "List Stock Reconciliations",
+        "responses": {
+          "200": {
+            "description": "List of Stock Reconciliations"
+          }
+        }
+      }
+    },
+    "/api/resource/Sales Invoice": {
+      "post": {
+        "tags": [
+          "4. Sales Invoice"
+        ],
+        "summary": "Create Sales Invoice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalesInvoice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "4. Sales Invoice"
+        ],
+        "summary": "List Sales Invoices",
+        "responses": {
+          "200": {
+            "description": "List of Invoices"
+          }
+        }
+      }
+    },
+    "/api/resource/Sales Invoice/{name}": {
+      "get": {
+        "tags": [
+          "4. Sales Invoice"
+        ],
+        "summary": "Get Sales Invoice Details",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "ACC-SINV-2026-00014"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice details"
+          }
+        }
+      }
+    },
+    "/api/resource/Payment Entry": {
+      "post": {
+        "tags": [
+          "5. Payment Entry"
+        ],
+        "summary": "Create Payment Entry",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentEntry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment Entry created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "5. Payment Entry"
+        ],
+        "summary": "List Payment Entries",
+        "responses": {
+          "200": {
+            "description": "List of Payment Entries"
+          }
+        }
+      }
+    },
+    "/api/resource/Customer": {
+      "post": {
+        "tags": [
+          "6. Master Data"
+        ],
+        "summary": "Create Customer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "6. Master Data"
+        ],
+        "summary": "List Customers",
+        "responses": {
+          "200": {
+            "description": "List of Customers"
+          }
+        }
+      }
+    },
+    "/api/resource/Journal Entry": {
+      "post": {
+        "tags": [
+          "6. Master Data"
+        ],
+        "summary": "Create Journal Entry",
+        "responses": {
+          "200": {
+            "description": "Journal Entry created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "6. Master Data"
+        ],
+        "summary": "List Journal Entries",
+        "responses": {
+          "200": {
+            "description": "List of Journal Entries"
+          }
+        }
+      }
+    },
+    "/api/resource/Account": {
+      "get": {
+        "tags": [
+          "6. Master Data"
+        ],
+        "summary": "List Accounts",
+        "responses": {
+          "200": {
+            "description": "List of Accounts"
+          }
+        }
+      }
+    }
+  }
+};
+    let currentAuthToken = "token 070a9cbc1338bfd:be00bbeb7c6b6e0";
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    function copyToken() {
+      const input = document.getElementById("activeTokenInput");
+      input.select();
+      navigator.clipboard.writeText(input.value).then(() => {
+        showToast("Authorization token copied to clipboard!");
+      }).catch(() => {
+        document.execCommand('copy');
+        showToast("Authorization token copied to clipboard!");
+      });
+    }
+
+    function setAuthToken(val) {
+      if (!val) return;
+      val = val.trim();
+      if (!val.startsWith("token ")) {
+        val = "token " + val;
+      }
+      currentAuthToken = val;
+      document.getElementById("activeTokenInput").value = currentAuthToken;
+      if (window.ui) {
+        window.ui.preauthorizeApiKey("ApiKeyAuth", currentAuthToken);
+      }
+    }
+
+    document.getElementById("activeTokenInput").addEventListener("input", function(e) {
+      setAuthToken(e.target.value);
+    });
+
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        spec: spec,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis
+        ],
+        layout: "BaseLayout",
+        docExpansion: "list",
+        defaultModelsExpandDepth: 2,
+        defaultModelExpandDepth: 2,
+        showExtensions: false,
+        showCommonExtensions: false,
+        requestInterceptor: (req) => {
+          if (currentAuthToken) {
+            req.headers['Authorization'] = currentAuthToken;
+          }
+          req.credentials = 'include';
+          return req;
+        },
+        responseInterceptor: (res) => {
+          try {
+            if (res.url && res.url.includes('/login') && res.obj) {
+              const msg = res.obj.message || res.obj;
+              if (msg && msg.auth_header) {
+                setAuthToken(msg.auth_header);
+                showToast("Token auto-updated from Login!");
+              } else if (msg && msg.api_key && msg.api_secret) {
+                setAuthToken("token " + msg.api_key + ":" + msg.api_secret);
+                showToast("Token auto-updated from Login!");
+              }
+            }
+          } catch(e) {
+            console.warn("Auto-token intercept error:", e);
+          }
+          return res;
+        },
+        onComplete: () => {
+          if (window.ui) {
+            window.ui.preauthorizeApiKey("ApiKeyAuth", currentAuthToken);
+          }
+        }
+      });
+    };
+  </script>
+</body>
+</html>

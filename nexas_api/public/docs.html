@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Havano POS & ERPNext API Documentation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin: 0;
+      background: #fafafa;
+      font-family: sans-serif;
+    }
+    .swagger-ui .topbar {
+      background-color: #171717;
+      padding: 10px 0;
+    }
+    .swagger-ui .topbar .topbar-wrapper {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+    }
+    .custom-title {
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-wrapper">
+      <span class="custom-title">⚡ Havano POS & ERPNext API Docs</span>
+    </div>
+  </div>
+  <div id="swagger-ui"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.min.js"></script>
+  <script>
+    window.onload = function() {
+      const spec = {"openapi": "3.0.3", "info": {"title": "Havano POS & Frappe ERPNext API Documentation", "version": "2.0.0", "description": "Complete REST & RPC API Reference for Havano POS System integrated with Frappe / ERPNext (`site: havano`, company: `showline`).\n\n### Authentication:\n1. **API Key/Secret Header**: `Authorization: token <api_key>:<api_secret>`\n2. **Session Cookie**: `sid` cookie acquired from `/api/method/login`"}, "servers": [{"url": "http://127.0.0.1:8000", "description": "Local Frappe Bench Server"}], "components": {"securitySchemes": {"ApiKeyAuth": {"type": "apiKey", "in": "header", "name": "Authorization", "description": "Format: `token api_key:api_secret`"}, "CookieAuth": {"type": "apiKey", "in": "cookie", "name": "sid"}}, "schemas": {"SalesInvoiceItem": {"type": "object", "required": ["item_code", "qty", "rate"], "properties": {"item_code": {"type": "string", "example": "TEST-POS-001"}, "item_name": {"type": "string", "example": "Test Burger"}, "description": {"type": "string", "example": "Test Burger"}, "qty": {"type": "number", "example": 2.0}, "rate": {"type": "number", "example": 10.0}, "price_list_rate": {"type": "number", "example": 10.0}, "uom": {"type": "string", "example": "Nos"}, "discount_percentage": {"type": "number", "example": 0.0}, "allow_zero_valuation_rate": {"type": "integer", "example": 1}, "income_account": {"type": "string", "example": "Sales - S"}, "expense_account": {"type": "string", "example": "Cost of Goods Sold - S"}, "cost_center": {"type": "string", "example": "Main - S"}, "warehouse": {"type": "string", "example": "Stores - S"}}}, "TaxLine": {"type": "object", "properties": {"charge_type": {"type": "string", "example": "On Net Total"}, "account_head": {"type": "string", "example": "VAT - S"}, "rate": {"type": "number", "example": 15.0}, "description": {"type": "string", "example": "VAT"}, "cost_center": {"type": "string", "example": "Main - S"}, "included_in_print_rate": {"type": "integer", "example": 1}}}, "JournalAccount": {"type": "object", "required": ["account"], "properties": {"account": {"type": "string", "example": "Administrative Expenses - S"}, "debit_in_account_currency": {"type": "number", "example": 50.0}, "credit_in_account_currency": {"type": "number", "example": 0.0}, "cost_center": {"type": "string", "example": "Main - S"}}}}}, "security": [{"ApiKeyAuth": []}, {"CookieAuth": []}], "paths": {"/api/method/login": {"post": {"tags": ["1. Authentication"], "summary": "Standard Login (Session Cookie)", "description": "Authenticates user and returns a `sid` cookie for all subsequent requests.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"usr": {"type": "string", "example": "Administrator"}, "pwd": {"type": "string", "example": "admin"}}}}}}, "responses": {"200": {"description": "Logged in successfully (Set-Cookie: sid=...)"}}}}, "/api/resource/Customer": {"post": {"tags": ["2. Customers"], "summary": "Create Customer (Native REST)", "description": "Creates a customer in Frappe with POS custom fields.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"doctype": {"type": "string", "example": "Customer"}, "customer_name": {"type": "string", "example": "Legends Machipisa Client"}, "customer_type": {"type": "string", "example": "Company"}, "customer_group": {"type": "string", "example": "Commercial"}, "territory": {"type": "string", "example": "All Territories"}, "default_price_list": {"type": "string", "example": "Standard Selling"}, "custom_warehouse": {"type": "string", "example": "Stores - S"}, "custom_cost_center": {"type": "string", "example": "Main - S"}, "custom_doctor": {"type": "string", "nullable": true}}}}}}, "responses": {"200": {"description": "Customer created"}}}, "get": {"tags": ["2. Customers"], "summary": "List / Sync Customers", "parameters": [{"name": "fields", "in": "query", "schema": {"type": "string"}, "example": "[\"name\",\"customer_name\",\"customer_group\",\"default_price_list\",\"custom_warehouse\",\"custom_cost_center\"]"}, {"name": "limit_page_length", "in": "query", "schema": {"type": "integer"}, "example": 200}], "responses": {"200": {"description": "List of customers"}}}}, "/api/resource/Sales Invoice": {"post": {"tags": ["3. Sales Invoices"], "summary": "Create & Submit Sales Invoice or Return / Credit Note", "description": "Pure Frappe Mode Sales Invoice matching Havano POS payload.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"doctype": {"type": "string", "example": "Sales Invoice"}, "customer": {"type": "string", "example": "Test POS Customer"}, "company": {"type": "string", "example": "showline"}, "cost_center": {"type": "string", "example": "Main - S"}, "set_warehouse": {"type": "string", "example": "Stores - S"}, "price_list": {"type": "string", "example": "Standard Selling"}, "posting_date": {"type": "string", "example": "2026-10-02"}, "posting_time": {"type": "string", "example": "12:00:00"}, "set_posting_time": {"type": "integer", "example": 1}, "currency": {"type": "string", "example": "USD"}, "conversion_rate": {"type": "number", "example": 1.0}, "is_pos": {"type": "integer", "example": 0}, "update_stock": {"type": "integer", "example": 1}, "docstatus": {"type": "integer", "example": 1}, "is_return": {"type": "integer", "example": 0, "description": "Set to 1 for Credit Note / Return"}, "return_against": {"type": "string", "example": "ACC-SINV-2026-00001"}, "reference_number": {"type": "string", "example": "POS-INV-100201"}, "custom_waiter": {"type": "string", "example": "Administrator"}, "pos_cashier": {"type": "string", "example": "Administrator"}, "custom_verification_code": {"type": "string", "example": "VERIF-998822"}, "grand_total": {"type": "number", "example": 23.0}, "total": {"type": "number", "example": 20.0}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/SalesInvoiceItem"}}, "taxes": {"type": "array", "items": {"$ref": "#/components/schemas/TaxLine"}}}}}}}, "responses": {"200": {"description": "Sales Invoice Created"}}}}, "/api/resource/Payment Entry": {"post": {"tags": ["4. Payment Entries"], "summary": "Create & Submit Payment Entry", "description": "Separate Payment Entry linked to Sales Invoice.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"doctype": {"type": "string", "example": "Payment Entry"}, "payment_type": {"type": "string", "example": "Receive"}, "party_type": {"type": "string", "example": "Customer"}, "party": {"type": "string", "example": "Test POS Customer"}, "company": {"type": "string", "example": "showline"}, "posting_date": {"type": "string", "example": "2026-10-02"}, "mode_of_payment": {"type": "string", "example": "Cash"}, "paid_from": {"type": "string", "example": "Debtors - S"}, "paid_to": {"type": "string", "example": "Cash - S"}, "paid_amount": {"type": "number", "example": 23.0}, "received_amount": {"type": "number", "example": 23.0}, "target_exchange_rate": {"type": "number", "example": 1.0}, "docstatus": {"type": "integer", "example": 1}, "references": {"type": "array", "items": {"type": "object", "properties": {"reference_doctype": {"type": "string", "example": "Sales Invoice"}, "reference_name": {"type": "string", "example": "ACC-SINV-2026-00001"}, "total_amount": {"type": "number", "example": 23.0}, "outstanding_amount": {"type": "number", "example": 23.0}, "allocated_amount": {"type": "number", "example": 23.0}}}}}}}}}, "responses": {"200": {"description": "Payment Entry Created"}}}}, "/api/method/nexas_api.api.create_journal_entry": {"post": {"tags": ["5. Journal Entries"], "summary": "Create Journal Entry (RPC Wrapper)", "description": "Supports simplified 2-legged expense/transfer or multi-account entry.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"company": {"type": "string", "example": "showline"}, "from_account": {"type": "string", "example": "Cash - S"}, "to_account": {"type": "string", "example": "Administrative Expenses - S"}, "amount": {"type": "number", "example": 50.0}, "cost_center": {"type": "string", "example": "Main - S"}, "posting_date": {"type": "string", "example": "2026-10-02"}, "user_remark": {"type": "string", "example": "Office Supplies Expense from POS Till"}, "docstatus": {"type": "integer", "example": 1}, "accounts": {"type": "array", "items": {"$ref": "#/components/schemas/JournalAccount"}}}}}}}, "responses": {"200": {"description": "Journal Entry Created"}}}}}};
+      window.ui = SwaggerUIBundle({
+        spec: spec,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 1,
+        docExpansion: "list"
+      });
+    };
+  </script>
+</body>
+</html>

@@ -1,203 +1,392 @@
-﻿{
-	"info": {
-		"name": "Nexas API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "1. Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "usr", "value": "Administrator", "type": "text" },
-						{ "key": "pwd", "value": "admin", "type": "text" },
-						{ "key": "timezone", "value": "Africa/Harare", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.login",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.login"]
-				}
-			}
-		},
-		{
-			"name": "2. Stock Transfer (Products)",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "page", "value": "1", "type": "text" },
-						{ "key": "limit", "value": "1000", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.get_products",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.get_products"]
-				}
-			}
-		},
-		{
-			"name": "3. Create Sales Invoice",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "customer", "value": "Cash Customer", "type": "text" },
-						{ "key": "company", "value": "Showline", "type": "text" },
-						{ "key": "reference_number", "value": "POS-INV-0001", "type": "text", "description": "Mandatory unique reference" },
-						{ "key": "currency", "value": "USD", "type": "text", "description": "Optional currency override" },
-						{ "key": "posting_date", "value": "2026-10-01", "type": "text", "description": "Optional" },
-						{ "key": "posting_time", "value": "15:30:00", "type": "text", "description": "Optional HH:MM:SS" },
-						{ "key": "items", "value": "[{\"item_code\": \"ITEM-001\", \"qty\": 1, \"rate\": 100}]", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.create_invoice",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.create_invoice"]
-				}
-			}
-		},
-		{
-			"name": "4. Create Payment Entry",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "party", "value": "Cash Customer", "type": "text" },
-						{ "key": "amount", "value": "100", "type": "text" },
-						{ "key": "mode_of_payment", "value": "Cash", "type": "text" },
-						{ "key": "reference_doctype", "value": "Sales Invoice", "type": "text" },
-						{ "key": "reference_name", "value": "SINV-00001", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.payment_entry",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.payment_entry"]
-				}
-			}
-		},
-		{
-			"name": "5. Get Default Cost Center",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "company", "value": "Showline", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.default_cost_center",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.default_cost_center"]
-				}
-			}
-		},
-		{
-			"name": "6. Chart of Accounts",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.get_account",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.get_account"]
-				}
-			}
-		},
-		{
-			"name": "7. Stock Reconciliation",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "from_date", "value": "2026-09-01", "type": "text" },
-						{ "key": "to_date", "value": "2026-10-31", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.get_stock_reconciliation_with_items",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.get_stock_reconciliation_with_items"]
-				}
-			}
-		},
-		{
-			"name": "8. Get Customers",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.get_customers",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.get_customers"]
-				}
-			}
-		},
-		{
-			"name": "9. Create Customer",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "customer_name", "value": "New POS Customer", "type": "text" },
-						{ "key": "customer_group", "value": "Commercial", "type": "text" },
-						{ "key": "territory", "value": "All Territories", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.create_customer",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.create_customer"]
-				}
-			}
-		},
-		{
-			"name": "10. Create Journal Entry",
-			"request": {
-				"method": "POST",
-				"header": [{"key": "Authorization", "value": "token {{token}}", "type": "text"}],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{ "key": "company", "value": "Showline", "type": "text" },
-						{ "key": "accounts", "value": "[{\"account\": \"Cash - S\", \"debit\": 100, \"cost_center\": \"Main - S\"}, {\"account\": \"Sales - S\", \"credit\": 100, \"cost_center\": \"Main - S\"}]", "type": "text" }
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/api/method/nexas_api.api.create_journal_entry",
-					"host": ["{{base_url}}"],
-					"path": ["api", "method", "nexas_api.api.create_journal_entry"]
-				}
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://127.0.0.1:8000"
-		},
-		{
-			"key": "token",
-			"value": "YOUR_API_KEY:YOUR_API_SECRET"
-		}
-	]
+{
+    "info": {
+        "name": "Nexas API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Login",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"usr\": \"Administrator\",\n    \"pwd\": \"admin\",\n    \"timezone\": \"Africa/Harare\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.login",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.login"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "let response = pm.response.json();",
+                            "if (response.token_string) {",
+                            "    pm.collectionVariables.set('token', response.token_string);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Get Products",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"page\": 1,\n    \"limit\": 1000\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.get_products",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.get_products"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "3. Create Sales Invoice (Legacy Native API)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"docstatus\": 1,\n    \"doctype\": \"Sales Invoice\",\n    \"naming_series\": \"ACC-SINV-.YYYY.-\",\n    \"company\": \"Main - S\",\n    \"customer\": \"Cash Customer\",\n    \"posting_date\": \"2026-10-02\",\n    \"posting_time\": \"12:00:00\",\n    \"set_posting_time\": 1,\n    \"update_stock\": 1,\n    \"set_warehouse\": \"Stores - S\",\n    \"currency\": \"USD\",\n    \"conversion_rate\": 1.0,\n    \"selling_price_list\": \"Standard Selling\",\n    \"price_list_currency\": \"USD\",\n    \"plc_conversion_rate\": 1.0,\n    \"po_no\": \"POS-1003\",\n    \"items\": [\n        {\n            \"item_code\": \"PROD-001\",\n            \"item_name\": \"Product 1\",\n            \"description\": \"Product 1\",\n            \"qty\": 2.0,\n            \"rate\": 150.0,\n            \"price_list_rate\": 150.0,\n            \"allow_zero_valuation_rate\": 1,\n            \"valuation_rate\": 0,\n            \"uom\": \"Nos\",\n            \"discount_percentage\": 0.0,\n            \"cost_center\": \"Main - S\"\n        }\n    ],\n    \"taxes\": [\n        {\n            \"charge_type\": \"Actual\",\n            \"account_head\": \"VAT - S\",\n            \"description\": \"VAT\",\n            \"cost_center\": \"Main - S\",\n            \"rate\": 0,\n            \"tax_amount\": 0,\n            \"included_in_print_rate\": 1\n        }\n    ],\n    \"payments\": [\n        {\n            \"mode_of_payment\": \"Cash\",\n            \"amount\": 300.0,\n            \"account\": \"Cash - S\"\n        }\n    ]\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/resource/Sales Invoice",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "resource",
+                        "Sales Invoice"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "4. Create Payment Entry (Legacy Native API)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"doctype\": \"Payment Entry\",\n    \"docstatus\": 1,\n    \"payment_type\": \"Receive\",\n    \"posting_date\": \"2026-10-02\",\n    \"company\": \"Main - S\",\n    \"party_type\": \"Customer\",\n    \"party\": \"Cash Customer\",\n    \"mode_of_payment\": \"Cash\",\n    \"paid_to\": \"Cash - S\",\n    \"paid_to_account_currency\": \"USD\",\n    \"paid_amount\": 300.0,\n    \"received_amount\": 300.0,\n    \"target_exchange_rate\": 1.0,\n    \"references\": [\n        {\n            \"reference_doctype\": \"Sales Invoice\",\n            \"reference_name\": \"ACC-SINV-2026-00001\",\n            \"allocated_amount\": 300.0\n        }\n    ]\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/resource/Payment Entry",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "resource",
+                        "Payment Entry"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "5. Get Default Cost Center",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"company\": \"Showline\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.default_cost_center",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.default_cost_center"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "6. Chart of Accounts",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.get_account",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.get_account"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "7. Stock Reconciliation",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"from_date\": \"2026-09-01\",\n    \"to_date\": \"2026-10-31\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.get_stock_reconciliation_with_items",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.get_stock_reconciliation_with_items"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "8. Get Customers",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.get_customers",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.get_customers"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "9. Create Customer",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"customer_name\": \"New POS Customer\",\n    \"customer_group\": \"Commercial\",\n    \"territory\": \"All Territories\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.create_customer",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.create_customer"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "10. Create Journal Entry",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "token {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"company\": \"Showline\",\n    \"accounts\": [\n        {\n            \"account\": \"Cash - S\",\n            \"debit\": 100,\n            \"cost_center\": \"Main - S\"\n        },\n        {\n            \"account\": \"Sales - S\",\n            \"credit\": 100,\n            \"cost_center\": \"Main - S\"\n        }\n    ]\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.create_journal_entry",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.create_journal_entry"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "10. Create Stock Reconciliation (Push to Cloud)",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"items\": [\n        {\n            \"item_code\": \"PROD-001\",\n            \"warehouse\": \"Stores - S\",\n            \"qty\": 45\n        },\n        {\n            \"item_code\": \"PROD-002\",\n            \"warehouse\": \"Stores - S\",\n            \"qty\": 12\n        }\n    ]\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.create_stock_reconciliation",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.create_stock_reconciliation"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "11. Create Stock Transfer",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"from_warehouse\": \"Stores - S\",\n    \"to_warehouse\": \"Finished Goods - S\",\n    \"items\": [\n        {\n            \"item_code\": \"PROD-001\",\n            \"qty\": 50\n        }\n    ],\n    \"transfer_all\": false\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/method/nexas_api.api.create_stock_transfer",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "method",
+                        "nexas_api.api.create_stock_transfer"
+                    ]
+                }
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8000"
+        },
+        {
+            "key": "token",
+            "value": "YOUR_API_KEY:YOUR_API_SECRET"
+        }
+    ]
 }
